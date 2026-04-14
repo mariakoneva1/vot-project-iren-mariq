@@ -3,10 +3,12 @@ kind: Application
 metadata:
   name: sprintboard
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: sprintboard
   source:
-    repoURL: https://github.com/your-org/your-repo.git
+    repoURL: https://github.com/mariakoneva1/vot-project-iren-mariq.git
     targetRevision: main
     path: deploy/helm/sprintboard
     helm:
@@ -22,3 +24,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true

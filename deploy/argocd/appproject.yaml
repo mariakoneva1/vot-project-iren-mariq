@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: sprintboard
+  namespace: argocd
+spec:
+  description: SprintBoard GitOps project
+  sourceRepos:
+    - https://github.com/mariakoneva1/vot-project-iren-mariq.git
+  destinations:
+    - namespace: sprintboard
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
