@@ -58,4 +58,3 @@ monitoring:
     labels:
       release: kube-prometheus-stack
       team: sprintboard
-

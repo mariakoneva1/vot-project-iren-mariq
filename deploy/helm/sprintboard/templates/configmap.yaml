@@ -10,4 +10,3 @@ data:
   BASE_URL: {{ .Values.config.baseUrl | quote }}
   DATABASE_NAME: {{ .Values.config.databaseName | quote }}
   DATA_DIR: {{ ternary .Values.persistence.mountPath "data" .Values.persistence.enabled | quote }}
-

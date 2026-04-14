@@ -31,4 +31,3 @@ class AppConfig:
             database_name=os.getenv("DATABASE_NAME", "sprintboard.db"),
             base_url=os.getenv("BASE_URL", "http://localhost:8000"),
         )
-

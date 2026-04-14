@@ -81,4 +81,3 @@ def advance_task(database_path: Path, task_id: int) -> str | None:
         )
         connection.commit()
     return next_status
-

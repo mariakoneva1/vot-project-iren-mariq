@@ -221,4 +221,3 @@ Secrets не се държат в кода.
 ```bash
 python -m unittest discover -s tests -v
 ```
-

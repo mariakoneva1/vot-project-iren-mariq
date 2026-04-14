@@ -34,4 +34,3 @@ class MetricsRegistry:
                 f"sprintboard_task_promoted_total {self.task_promoted_total}",
             ]
         return "\n".join(lines).encode("utf-8")
-
