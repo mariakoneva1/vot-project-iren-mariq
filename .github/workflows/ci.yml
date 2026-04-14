@@ -37,6 +37,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,21 +48,21 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
-        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        if: ${{ env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != '' }}
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
 
       - name: Build and push image
-        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        if: ${{ env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != '' }}
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/sprintboard:${{ github.sha }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/sprintboard:latest
+            ${{ env.DOCKERHUB_USERNAME }}/sprintboard:${{ github.sha }}
+            ${{ env.DOCKERHUB_USERNAME }}/sprintboard:latest
 
   notify:
     if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -67,11 +70,12 @@ jobs:
       - quality
       - docker
     runs-on: ubuntu-latest
+    env:
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
     steps:
       - name: Send webhook notification
-        if: ${{ secrets.WEBHOOK_URL != '' }}
+        if: ${{ env.WEBHOOK_URL != '' }}
         env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           QUALITY_RESULT: ${{ needs.quality.result }}
           DOCKER_RESULT: ${{ needs.docker.result }}
           SHA: ${{ github.sha }}
@@ -80,4 +84,3 @@ jobs:
           curl -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"repository\":\"$REPOSITORY\",\"sha\":\"$SHA\",\"quality\":\"$QUALITY_RESULT\",\"docker\":\"$DOCKER_RESULT\"}"
-

@@ -13,6 +13,9 @@ jobs:
   promote:
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
     steps:
       - name: Checkout target branch
         uses: actions/checkout@v4
@@ -21,7 +24,7 @@ jobs:
 
       - name: Update production image tag
         env:
-          IMAGE_REPOSITORY: ${{ secrets.DOCKERHUB_USERNAME }}/sprintboard
+          IMAGE_REPOSITORY: ${{ env.DOCKERHUB_USERNAME }}/sprintboard
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
         run: |
           if [ -z "$IMAGE_REPOSITORY" ] || [[ "$IMAGE_REPOSITORY" == "/sprintboard" ]]; then
@@ -43,13 +46,11 @@ jobs:
           git push origin main
 
       - name: Notify deployment webhook
-        if: ${{ secrets.WEBHOOK_URL != '' }}
+        if: ${{ env.WEBHOOK_URL != '' }}
         env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           SHA: ${{ github.event.workflow_run.head_sha }}
           REPOSITORY: ${{ github.repository }}
         run: |
           curl -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{\"repository\":\"$REPOSITORY\",\"sha\":\"$SHA\",\"status\":\"manifest-promoted\"}"
-
