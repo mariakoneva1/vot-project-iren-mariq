@@ -1,0 +1,16 @@
+replicaCount: 3
+
+image:
+  repository: your-dockerhub-user/sprintboard
+  tag: "replace-me"
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  className: nginx
+  host: sprintboard.example.com
+
+config:
+  appEnv: production
+  baseUrl: https://sprintboard.example.com
+

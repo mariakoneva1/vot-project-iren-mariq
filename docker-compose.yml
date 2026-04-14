@@ -1,0 +1,15 @@
+services:
+  sprintboard:
+    build:
+      context: .
+    image: sprintboard:local
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: docker
+      APP_NAME: SprintBoard
+      DATA_DIR: /data
+      PORT: 8000
+    volumes:
+      - ./data:/data
+

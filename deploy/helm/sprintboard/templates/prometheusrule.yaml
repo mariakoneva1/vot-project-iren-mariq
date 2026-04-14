@@ -1,0 +1,31 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "sprintboard.fullname" . }}
+  labels:
+    {{- include "sprintboard.labels" . | nindent 4 }}
+    {{- toYaml .Values.monitoring.alerts.labels | nindent 4 }}
+spec:
+  groups:
+    - name: sprintboard.rules
+      rules:
+        - alert: SprintBoardAppErrorsDetected
+          expr: increase(sprintboard_errors_total[5m]) > 0
+          for: 2m
+          labels:
+            severity: warning
+            team: sprintboard
+          annotations:
+            summary: SprintBoard emitted at least one application error
+            description: Check the application logs and recent deployment changes.
+        - alert: SprintBoardPodUnavailable
+          expr: 'kube_deployment_status_replicas_unavailable{deployment="{{ include "sprintboard.fullname" . }}"} > 0'
+          for: 3m
+          labels:
+            severity: critical
+            team: sprintboard
+          annotations:
+            summary: SprintBoard deployment has unavailable replicas
+            description: The production deployment is missing one or more replicas.
+{{- end }}

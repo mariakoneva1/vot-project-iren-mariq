@@ -1,0 +1,61 @@
+replicaCount: 2
+
+image:
+  repository: your-dockerhub-user/sprintboard
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: dockerhub-registry
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: nginx
+  host: sprintboard.local
+  path: /
+  pathType: Prefix
+  annotations: {}
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+persistence:
+  enabled: true
+  size: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  mountPath: /data
+
+config:
+  appName: SprintBoard
+  appEnv: production
+  baseUrl: https://sprintboard.local
+  databaseName: sprintboard.db
+
+secretRefs:
+  existingSecretName: ""
+
+monitoring:
+  enabled: true
+  serviceMonitor:
+    interval: 30s
+    scrapeTimeout: 10s
+    labels:
+      release: kube-prometheus-stack
+  alerts:
+    labels:
+      release: kube-prometheus-stack
+      team: sprintboard
+
