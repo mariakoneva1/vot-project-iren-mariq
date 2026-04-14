@@ -40,7 +40,8 @@ def create_app(config: AppConfig | None = None, metrics: MetricsRegistry | None 
 
         try:
             if method == "GET" and path == "/":
-                body = render_dashboard(resolved_config.app_name, list_tasks(resolved_config.database_path))
+                tasks = list_tasks(resolved_config.database_path)
+                body = render_dashboard(resolved_config.app_name, tasks)
                 headers = [("Content-Type", "text/html; charset=utf-8")]
                 start_response("200 OK", headers)
                 _json_log(method, path, "200", (perf_counter() - request_started) * 1000)
@@ -54,7 +55,9 @@ def create_app(config: AppConfig | None = None, metrics: MetricsRegistry | None 
                 description = form_data.get("description", [""])[0].strip()
 
                 if not title:
-                    start_response("400 Bad Request", [("Content-Type", "text/plain; charset=utf-8")])
+                    start_response(
+                        "400 Bad Request", [("Content-Type", "text/plain; charset=utf-8")]
+                    )
                     _json_log(method, path, "400", (perf_counter() - request_started) * 1000)
                     return [b"Title is required."]
 
@@ -85,7 +88,9 @@ def create_app(config: AppConfig | None = None, metrics: MetricsRegistry | None 
                 return [b'{"status":"ok"}']
 
             if method == "GET" and path == "/metrics":
-                start_response("200 OK", [("Content-Type", "text/plain; version=0.0.4; charset=utf-8")])
+                start_response(
+                    "200 OK", [("Content-Type", "text/plain; version=0.0.4; charset=utf-8")]
+                )
                 _json_log(method, path, "200", (perf_counter() - request_started) * 1000)
                 return [resolved_metrics.render()]
 
@@ -99,7 +104,9 @@ def create_app(config: AppConfig | None = None, metrics: MetricsRegistry | None 
                     start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
                     _json_log(method, path, "404", (perf_counter() - request_started) * 1000)
                     return [b"Not Found."]
-                content_type = "text/css; charset=utf-8" if asset_path.suffix == ".css" else "text/plain"
+                content_type = (
+                    "text/css; charset=utf-8" if asset_path.suffix == ".css" else "text/plain"
+                )
                 start_response("200 OK", [("Content-Type", content_type)])
                 _json_log(method, path, "200", (perf_counter() - request_started) * 1000)
                 return [_read_static_file(asset_path)]
@@ -110,9 +117,10 @@ def create_app(config: AppConfig | None = None, metrics: MetricsRegistry | None 
         except Exception:
             resolved_metrics.increment("error_total")
             traceback.print_exc()
-            start_response("500 Internal Server Error", [("Content-Type", "text/plain; charset=utf-8")])
+            start_response(
+                "500 Internal Server Error", [("Content-Type", "text/plain; charset=utf-8")]
+            )
             _json_log(method, path, "500", (perf_counter() - request_started) * 1000)
             return [b"Internal Server Error."]
 
     return application
-

@@ -93,7 +93,7 @@ resource "helm_release" "kube_prometheus_stack" {
         admin = {
           existingSecret = kubernetes_secret.grafana_admin.metadata[0].name
           userKey        = "admin-user"
-          passwordKey    = "admin-password"
+          passwordKey    = "admin-password" # pragma: allowlist secret
         }
       }
       alertmanager = {

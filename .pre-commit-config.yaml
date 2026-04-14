@@ -4,6 +4,7 @@ repos:
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
+        exclude: ^deploy/helm/sprintboard/templates/
       - id: detect-private-key
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -27,4 +28,3 @@ repos:
         entry: python -m unittest discover -s tests -v
         language: system
         pass_filenames: false
-

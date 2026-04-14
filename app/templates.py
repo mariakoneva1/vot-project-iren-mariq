@@ -6,13 +6,12 @@ from html import escape
 def _render_task_card(task: dict[str, str | int]) -> str:
     task_id = int(task["id"])
     next_label = "Move Forward" if task["status"] != "DONE" else "Done"
-    button = (
-        f"""
+    disabled_attr = "disabled" if task["status"] == "DONE" else ""
+    button = f"""
         <form action="/tasks/{task_id}/advance" method="post">
-          <button type="submit" {"disabled" if task["status"] == "DONE" else ""}>{next_label}</button>
+          <button type="submit" {disabled_attr}>{next_label}</button>
         </form>
         """
-    )
     return f"""
     <article class="task-card status-{escape(str(task["status"]).lower())}">
       <div class="task-header">
@@ -60,7 +59,8 @@ def render_dashboard(app_name: str, tasks: list[dict[str, str | int]]) -> bytes:
               <p class="eyebrow">DevOps Demo App</p>
               <h1>{escape(app_name)}</h1>
               <p class="hero-copy">
-                A small planning board that is easy to containerize, test, observe and deploy with GitOps.
+                A small planning board that is easy to containerize, test,
+                observe and deploy with GitOps.
               </p>
             </div>
             <form class="task-form" action="/tasks" method="post">
@@ -76,11 +76,10 @@ def render_dashboard(app_name: str, tasks: list[dict[str, str | int]]) -> bytes:
             </form>
           </section>
           <section class="board">
-            {''.join(columns)}
+            {"".join(columns)}
           </section>
         </main>
       </body>
     </html>
     """
     return html.encode("utf-8")
-

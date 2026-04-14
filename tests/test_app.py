@@ -10,7 +10,9 @@ from app.config import AppConfig
 from app.metrics import MetricsRegistry
 
 
-def call_app(application, method: str, path: str, body: str = "") -> tuple[str, list[tuple[str, str]], bytes]:
+def call_app(
+    application, method: str, path: str, body: str = ""
+) -> tuple[str, list[tuple[str, str]], bytes]:
     response = {}
 
     def start_response(status, headers):
