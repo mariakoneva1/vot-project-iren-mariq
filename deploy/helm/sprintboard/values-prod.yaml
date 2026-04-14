@@ -13,4 +13,3 @@ ingress:
 config:
   appEnv: production
   baseUrl: https://sprintboard.example.com
-

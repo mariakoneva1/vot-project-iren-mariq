@@ -69,4 +69,3 @@
     Terraform provisions namespaces, registry secret, ArgoCD, monitoring stack and alert routing.
   </text>
 </svg>
-

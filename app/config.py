@@ -20,7 +20,7 @@ class AppConfig:
         return self.data_dir / self.database_name
 
     @classmethod
-    def from_env(cls) -> "AppConfig":
+    def from_env(cls) -> AppConfig:
         data_dir = Path(os.getenv("DATA_DIR", "data"))
         return cls(
             app_name=os.getenv("APP_NAME", "SprintBoard"),
