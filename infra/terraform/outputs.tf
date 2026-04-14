@@ -9,3 +9,11 @@ output "monitoring_namespace" {
 output "argocd_namespace" {
   value = kubernetes_namespace.argocd.metadata[0].name
 }
+
+output "ingress_namespace" {
+  value = kubernetes_namespace.ingress_nginx.metadata[0].name
+}
+
+output "application_url" {
+  value = "http://${var.app_domain}"
+}

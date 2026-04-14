@@ -6,6 +6,10 @@ on:
     types:
       - completed
 
+concurrency:
+  group: gitops-promotion
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -21,6 +25,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Update production image tag
         env:

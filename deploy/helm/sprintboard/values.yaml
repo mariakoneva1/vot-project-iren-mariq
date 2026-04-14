@@ -16,7 +16,7 @@ service:
 ingress:
   enabled: true
   className: nginx
-  host: sprintboard.local
+  host: sprintboard.127.0.0.1.nip.io
   path: /
   pathType: Prefix
   annotations: {}
@@ -41,7 +41,7 @@ persistence:
 config:
   appName: SprintBoard
   appEnv: production
-  baseUrl: https://sprintboard.local
+  baseUrl: http://sprintboard.127.0.0.1.nip.io
   databaseName: sprintboard.db
 
 secretRefs:

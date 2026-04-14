@@ -6,4 +6,5 @@ dockerhub_username      = "your-dockerhub-user"
 dockerhub_token         = "replace-with-token" # pragma: allowlist secret
 notification_webhook_url = "https://hooks.example.com/devops"
 grafana_admin_password  = "replace-with-strong-password" # pragma: allowlist secret
-app_domain              = "sprintboard.example.com"
+app_domain              = "sprintboard.127.0.0.1.nip.io"
+ingress_class_name      = "nginx"

@@ -22,24 +22,24 @@
   <text x="1038" y="235" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">CI / CD alerts</text>
 
   <rect x="360" y="390" width="560" height="250" rx="28" fill="#FFF8EF" stroke="#D9CDBA" stroke-width="2"/>
-  <text x="390" y="435" fill="#8F3F1F" font-family="Segoe UI, sans-serif" font-size="24" font-weight="700">Kubernetes Cluster</text>
+  <text x="390" y="435" fill="#8F3F1F" font-family="Segoe UI, sans-serif" font-size="24" font-weight="700">kind Kubernetes Cluster</text>
 
   <rect x="390" y="470" width="190" height="130" rx="20" fill="#F4D8C6" stroke="#A86540" stroke-width="2"/>
   <text x="420" y="512" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="22" font-weight="700">ArgoCD</text>
   <text x="420" y="542" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">GitOps sync</text>
-  <text x="420" y="567" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">Helm release</text>
+  <text x="420" y="567" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">AppProject + Application</text>
 
   <rect x="610" y="470" width="270" height="130" rx="20" fill="#D3E8D5" stroke="#4A7C59" stroke-width="2"/>
   <text x="640" y="512" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="22" font-weight="700">SprintBoard App</text>
-  <text x="640" y="542" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">Ingress + Service + PVC</text>
-  <text x="640" y="567" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">healthz / metrics / logs</text>
+  <text x="640" y="542" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">Pods + Service + Ingress + PVC</text>
+  <text x="640" y="567" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="17">healthz / metrics / JSON logs</text>
 
   <rect x="930" y="390" width="230" height="250" rx="28" fill="#EEF5F2" stroke="#90B39A" stroke-width="2"/>
   <text x="960" y="435" fill="#4A7C59" font-family="Segoe UI, sans-serif" font-size="24" font-weight="700">Observability</text>
-  <text x="960" y="485" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Prometheus</text>
-  <text x="960" y="515" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Loki / Promtail</text>
-  <text x="960" y="545" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Alertmanager</text>
-  <text x="960" y="575" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Webhook alerts</text>
+  <text x="960" y="475" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Prometheus</text>
+  <text x="960" y="505" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Grafana dashboard</text>
+  <text x="960" y="535" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Loki / Promtail</text>
+  <text x="960" y="565" fill="#17212B" font-family="Segoe UI, sans-serif" font-size="18">Alertmanager + webhook</text>
 
   <line x1="340" y1="210" x2="420" y2="210" stroke="#8F3F1F" stroke-width="4"/>
   <polygon points="420,210 404,202 404,218" fill="#8F3F1F"/>
@@ -66,6 +66,6 @@
   <polygon points="1095,270 1081,283 1098,288" fill="#5278A6"/>
 
   <text x="87" y="682" fill="#5E6A78" font-family="Segoe UI, sans-serif" font-size="18">
-    Terraform provisions namespaces, registry secret, ArgoCD, monitoring stack and alert routing.
+    Terraform provisions ingress-nginx, ArgoCD, Grafana/Prometheus/Loki, secrets, namespaces and alert routing.
   </text>
 </svg>

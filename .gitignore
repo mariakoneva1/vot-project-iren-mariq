@@ -21,3 +21,5 @@ terraform.tfstate
 terraform.tfstate.*
 .terraform/
 .terraform.lock.hcl
+infra/terraform/terraform.tfvars
+infra/terraform/*.auto.tfvars.json

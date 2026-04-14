@@ -45,5 +45,11 @@ variable "grafana_admin_password" {
 variable "app_domain" {
   description = "Public DNS name for the production ingress."
   type        = string
-  default     = "sprintboard.example.com"
+  default     = "sprintboard.127.0.0.1.nip.io"
+}
+
+variable "ingress_class_name" {
+  description = "IngressClass used by the application ingress."
+  type        = string
+  default     = "nginx"
 }

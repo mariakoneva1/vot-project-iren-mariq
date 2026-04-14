@@ -8,8 +8,8 @@ image:
 ingress:
   enabled: true
   className: nginx
-  host: sprintboard.example.com
+  host: sprintboard.127.0.0.1.nip.io
 
 config:
   appEnv: production
-  baseUrl: https://sprintboard.example.com
+  baseUrl: http://sprintboard.127.0.0.1.nip.io

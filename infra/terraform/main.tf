@@ -28,6 +28,12 @@ resource "kubernetes_namespace" "sprintboard" {
   }
 }
 
+resource "kubernetes_namespace" "ingress_nginx" {
+  metadata {
+    name = "ingress-nginx"
+  }
+}
+
 resource "kubernetes_secret" "dockerhub_registry" {
   metadata {
     name      = "dockerhub-registry"
@@ -72,12 +78,90 @@ resource "kubernetes_secret" "grafana_admin" {
   }
 }
 
+resource "helm_release" "ingress_nginx" {
+  name             = "ingress-nginx"
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  namespace        = kubernetes_namespace.ingress_nginx.metadata[0].name
+  create_namespace = false
+
+  values = [
+    yamlencode({
+      controller = {
+        hostPort = {
+          enabled = true
+        }
+        service = {
+          type = "NodePort"
+        }
+        nodeSelector = {
+          "ingress-ready" = "true"
+        }
+        tolerations = [
+          {
+            key      = "node-role.kubernetes.io/control-plane"
+            operator = "Exists"
+            effect   = "NoSchedule"
+          }
+        ]
+      }
+    })
+  ]
+}
+
 resource "helm_release" "argocd" {
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
   chart            = "argo-cd"
   namespace        = kubernetes_namespace.argocd.metadata[0].name
   create_namespace = false
+
+  values = [
+    yamlencode({
+      configs = {
+        params = {
+          "server.insecure" = "true"
+        }
+      }
+    })
+  ]
+
+  depends_on = [helm_release.ingress_nginx]
+}
+
+resource "kubernetes_manifest" "argocd_project" {
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "AppProject"
+    metadata = {
+      name      = "sprintboard"
+      namespace = kubernetes_namespace.argocd.metadata[0].name
+    }
+    spec = {
+      description = "SprintBoard GitOps project"
+      sourceRepos = [var.gitops_repo_url]
+      destinations = [
+        {
+          namespace = kubernetes_namespace.sprintboard.metadata[0].name
+          server    = "https://kubernetes.default.svc"
+        }
+      ]
+      clusterResourceWhitelist = [
+        {
+          group = "*"
+          kind  = "*"
+        }
+      ]
+      namespaceResourceWhitelist = [
+        {
+          group = "*"
+          kind  = "*"
+        }
+      ]
+    }
+  }
+
+  depends_on = [helm_release.argocd]
 }
 
 resource "helm_release" "kube_prometheus_stack" {
@@ -95,6 +179,23 @@ resource "helm_release" "kube_prometheus_stack" {
           userKey        = "admin-user"
           passwordKey    = "admin-password" # pragma: allowlist secret
         }
+        sidecar = {
+          dashboards = {
+            enabled         = true
+            label           = "grafana_dashboard"
+            labelValue      = "1"
+            searchNamespace = "ALL"
+          }
+        }
+        additionalDataSources = [
+          {
+            name      = "Loki"
+            type      = "loki"
+            access    = "proxy"
+            url       = "http://loki-gateway.monitoring.svc.cluster.local"
+            isDefault = false
+          }
+        ]
       }
       alertmanager = {
         alertmanagerSpec = {
@@ -105,8 +206,32 @@ resource "helm_release" "kube_prometheus_stack" {
           }
         }
       }
+      prometheus = {
+        prometheusSpec = {
+          serviceMonitorNamespaceSelector = {}
+          ruleNamespaceSelector           = {}
+        }
+      }
     })
   ]
+
+  depends_on = [helm_release.ingress_nginx]
+}
+
+resource "kubernetes_config_map" "grafana_dashboard" {
+  metadata {
+    name      = "sprintboard-grafana-dashboard"
+    namespace = kubernetes_namespace.monitoring.metadata[0].name
+    labels = {
+      grafana_dashboard = "1"
+    }
+  }
+
+  data = {
+    "sprintboard-overview.json" = file("${path.module}/../grafana/dashboards/sprintboard-overview.json")
+  }
+
+  depends_on = [helm_release.kube_prometheus_stack]
 }
 
 resource "helm_release" "loki" {
@@ -184,7 +309,7 @@ resource "kubernetes_manifest" "argocd_application" {
       namespace = kubernetes_namespace.argocd.metadata[0].name
     }
     spec = {
-      project = "default"
+      project = "sprintboard"
       source = {
         repoURL        = var.gitops_repo_url
         targetRevision = var.gitops_target_revision
@@ -193,12 +318,16 @@ resource "kubernetes_manifest" "argocd_application" {
           valueFiles = ["values.yaml", "values-prod.yaml"]
           parameters = [
             {
+              name  = "ingress.className"
+              value = var.ingress_class_name
+            },
+            {
               name  = "ingress.host"
               value = var.app_domain
             },
             {
               name  = "config.baseUrl"
-              value = "https://${var.app_domain}"
+              value = "http://${var.app_domain}"
             }
           ]
         }
@@ -217,5 +346,5 @@ resource "kubernetes_manifest" "argocd_application" {
     }
   }
 
-  depends_on = [helm_release.argocd]
+  depends_on = [kubernetes_manifest.argocd_project]
 }
