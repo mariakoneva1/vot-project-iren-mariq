@@ -23,7 +23,7 @@ def update_values_file(path: Path, repository: str, tag: str) -> None:
 
         if inside_image_block and stripped.startswith("tag:"):
             indent = line[: len(line) - len(line.lstrip())]
-            updated_lines.append(f'{indent}tag: "{tag}"')
+            updated_lines.append(f'{indent}tag: "{tag}" # pragma: allowlist secret')
             inside_image_block = False
             continue
 

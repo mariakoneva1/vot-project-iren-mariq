@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: your-dockerhub-user/sprintboard
+  repository: mariakoneva/sprintboard
   tag: "latest"
   pullPolicy: IfNotPresent
 

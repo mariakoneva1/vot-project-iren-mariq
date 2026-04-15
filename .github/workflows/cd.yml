@@ -62,4 +62,14 @@ jobs:
         run: |
           curl -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d "{\"repository\":\"$REPOSITORY\",\"sha\":\"$SHA\",\"status\":\"manifest-promoted\"}"
+            -d "{
+              \"embeds\": [{
+                \"title\": \"CD: Image Promoted\",
+                \"color\": 3447003,
+                \"fields\": [
+                  {\"name\": \"Repository\", \"value\": \"$REPOSITORY\", \"inline\": true},
+                  {\"name\": \"Commit\", \"value\": \"\`${SHA:0:7}\`\", \"inline\": true},
+                  {\"name\": \"Status\", \"value\": \"Manifest promoted to production\", \"inline\": false}
+                ]
+              }]
+            }"

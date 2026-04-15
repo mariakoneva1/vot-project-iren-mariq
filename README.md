@@ -86,9 +86,21 @@ Cluster definition:
 
 Bootstrap script:
 
-- [scripts/bootstrap-cluster.ps1](scripts/bootstrap-cluster.ps1)
+- [scripts/bootstrap-cluster.sh](scripts/bootstrap-cluster.sh) (Linux / macOS)
+- [scripts/bootstrap-cluster.ps1](scripts/bootstrap-cluster.ps1) (Windows)
 
-Example:
+Example (Linux / macOS):
+
+```bash
+./scripts/bootstrap-cluster.sh \
+  --gitops-repo-url "https://github.com/<your-user>/<your-repo>.git" \
+  --dockerhub-username "<dockerhub-user>" \
+  --dockerhub-token "<dockerhub-token>" \
+  --notification-webhook-url "https://hooks.example.com/devops" \
+  --grafana-admin-password "<strong-password>"
+```
+
+Example (Windows):
 
 ```powershell
 .\scripts\bootstrap-cluster.ps1 `

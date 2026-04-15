@@ -125,6 +125,25 @@ jobs:
           SHA: ${{ github.sha }}
           REPOSITORY: ${{ github.repository }}
         run: |
+          if [ "$QUALITY_RESULT" = "success" ] && [ "$PLATFORM_RESULT" = "success" ] && [ "$DOCKER_RESULT" = "success" ]; then
+            COLOR=3066993
+            STATUS="SUCCESS"
+          else
+            COLOR=15158332
+            STATUS="FAILURE"
+          fi
           curl -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d "{\"repository\":\"$REPOSITORY\",\"sha\":\"$SHA\",\"quality\":\"$QUALITY_RESULT\",\"platform\":\"$PLATFORM_RESULT\",\"docker\":\"$DOCKER_RESULT\"}"
+            -d "{
+              \"embeds\": [{
+                \"title\": \"CI Pipeline: $STATUS\",
+                \"color\": $COLOR,
+                \"fields\": [
+                  {\"name\": \"Repository\", \"value\": \"$REPOSITORY\", \"inline\": true},
+                  {\"name\": \"Commit\", \"value\": \"\`${SHA:0:7}\`\", \"inline\": true},
+                  {\"name\": \"Quality\", \"value\": \"$QUALITY_RESULT\", \"inline\": true},
+                  {\"name\": \"Platform\", \"value\": \"$PLATFORM_RESULT\", \"inline\": true},
+                  {\"name\": \"Docker\", \"value\": \"$DOCKER_RESULT\", \"inline\": true}
+                ]
+              }]
+            }"
