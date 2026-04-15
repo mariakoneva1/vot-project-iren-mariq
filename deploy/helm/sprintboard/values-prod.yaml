@@ -2,7 +2,7 @@ replicaCount: 3
 
 image:
   repository: mariakoneva/sprintboard
-  tag: "f3db88f6b4f271244af6e27fc866ce115b74a150" # pragma: allowlist secret
+  tag: "dec6313b6a49b3ceed8afbbd07d5e49f28b6c04d" # pragma: allowlist secret
   pullPolicy: IfNotPresent
 
 ingress:
